@@ -7,10 +7,10 @@ export async function listMovies(page, size, winner = null, year = null) {
         params += !!year && year !== '' ? "&year=" + year : "";
 
         const response = await fetch(`${BASE_URL}?` + params);
-        if (!response.ok) throw new Error("Erro ao carregar lista de filmes");
+        if (!response.ok) throw new Error("Error loading movie list");
         return await response.json();
     } catch (error) {
-        console.error("Erro API (movie data):", error);
+        console.error("Error API (movie data):", error);
         return null;
     }
 }
@@ -18,10 +18,10 @@ export async function listMovies(page, size, winner = null, year = null) {
 export async function getMovieById(id) {
     try {
         const response = await fetch(`${BASE_URL}/${id}`);
-        if (!response.ok) throw new Error("Erro ao buscar filme");
+        if (!response.ok) throw new Error("Error get movie");
         return await response.json();
     } catch (error) {
-        console.error("Erro API (Movie by ID):", error);
+        console.error("Error API (movie by ID):", error);
         return null;
     }
 }
@@ -29,10 +29,10 @@ export async function getMovieById(id) {
 export async function getYearsWithMultipleWinners() {
     try {
         const response = await fetch(`${BASE_URL}/yearsWithMultipleWinners`);
-        if (!response.ok) throw new Error("Erro ao carregar anos com multiplos vencedores");
+        if (!response.ok) throw new Error("Error loading years with multiple winners");
         return await response.json();
     } catch (error) {
-        console.error("Erro API (movie data):", error);
+        console.error("Erro API (years with multiple winners):", error);
         return null;
     }
 }
@@ -40,10 +40,10 @@ export async function getYearsWithMultipleWinners() {
 export async function getWinnersByYear(year) {
     try {
         const response = await fetch(`${BASE_URL}/winnersByYear?year=${year}`);
-        if (!response.ok) throw new Error("Erro ao carregar lista de vencedores por ano");
+        if (!response.ok) throw new Error("Error loading list of winners by year");
         return await response.json();
     } catch (error) {
-        console.error("Erro API (movie data):", error);
+        console.error("Erro API (winners by year):", error);
         return null;
     }
 }
@@ -51,10 +51,10 @@ export async function getWinnersByYear(year) {
 export async function getStudiosWithWinCount() {
     try {
         const response = await fetch(`${BASE_URL}/studiosWithWinCount`);
-        if (!response.ok) throw new Error("Erro ao carregar estudios com vitorias");
+        if (!response.ok) throw new Error("Error loading studios with wins count");
         return await response.json();
     } catch (error) {
-        console.error("Erro API (movie data):", error);
+        console.error("Erro API (studios with win count):", error);
         return null;
     }
 }
@@ -62,10 +62,10 @@ export async function getStudiosWithWinCount() {
 export async function getMaxMinWinIntervalForProducers() {
     try {
         const response = await fetch(`${BASE_URL}/maxMinWinIntervalForProducers`);
-        if (!response.ok) throw new Error("Erro ao carregar intervalo de vitorias");
+        if (!response.ok) throw new Error("Error loading max and min win interval for producers");
         return await response.json();
     } catch (error) {
-        console.error("Erro API (movie data):", error);
+        console.error("Erro API (max min win interval for producers):", error);
         return null;
     }
 }
