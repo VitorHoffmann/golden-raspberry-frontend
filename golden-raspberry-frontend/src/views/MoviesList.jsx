@@ -15,9 +15,7 @@ const MovieTable = () => {
             setLoading(true);
             const data = await listMovies(
                 page,
-                size,
-                winnerFilter,
-                yearFilter
+                size
             );
             setMovies(data.content);
             setTotalPages(data.totalPages);
@@ -28,13 +26,31 @@ const MovieTable = () => {
 
     useEffect(() => {
         loadMovies();
-    }, [page, size, winnerFilter, yearFilter]);
+    }, [page, size]);
 
     const handlePageChange = (newPage) => {
         if (newPage >= 0 && newPage < totalPages) {
             setPage(newPage);
         }
     };
+
+    async function filterMovies() {
+        setLoading(true);
+        const data = await listMovies(
+            0,
+            size,
+            winnerFilter,
+            yearFilter
+        );
+        setMovies(data.content);
+        setTotalPages(data.totalPages);
+        setLoading(false);
+    }
+
+    function clearFilter() {
+        setWinnerFilter('');
+        setYearFilter('');
+    }
 
     if (loading) {
         return (
@@ -51,33 +67,40 @@ const MovieTable = () => {
             <h3>List movies</h3>
 
             <div className="table-responsive mt-3">
+
+                <div className="input-group mb-3 mt-2">
+                    <input
+                        type="number"
+                        className="form-control form-control-sm"
+                        placeholder="Filter by year"
+                        value={yearFilter}
+                        onChange={(e) => setYearFilter(e.target.value)}
+                    />
+
+                    <select
+                        className="form-select form-select-sm"
+                        value={winnerFilter}
+                        onChange={(e) => setWinnerFilter(e.target.value)}
+                    >
+                        <option value="">Yes/No</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                    <button className="btn btn-secondary" onClick={clearFilter}>
+                        <span>Clear Filter</span>
+                    </button>
+                    <button className="btn btn-primary" onClick={filterMovies}>
+                        <i className="bi bi-search"></i>
+                    </button>
+                </div>
+
                 <table className="table table-bordered align-middle text-center">
                     <thead className="table-light">
                     <tr>
-                        <th>ID</th>
-                        <th>
-                            <div>Year</div>
-                            <input
-                                type="number"
-                                className="form-control form-control-sm"
-                                placeholder="Filter by year"
-                                value={yearFilter}
-                                onChange={(e) => setYearFilter(e.target.value)}
-                            />
-                        </th>
+                    <th>ID</th>
+                        <th>Year</th>
                         <th>Title</th>
-                        <th>
-                            <div>Winner?</div>
-                            <select
-                                className="form-select form-select-sm"
-                                value={winnerFilter}
-                                onChange={(e) => setWinnerFilter(e.target.value)}
-                            >
-                                <option value="">Yes/No</option>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                            </select>
-                        </th>
+                        <th>Winner?</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -99,7 +122,6 @@ const MovieTable = () => {
                 </table>
             </div>
 
-            {/* Pagination */}
             <nav>
                 <ul className="pagination justify-content-center">
                     <li className={`page-item ${page === 0 ? 'disabled' : ''}`}>

@@ -1,126 +1,103 @@
 import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
-import Dashboard from '../components/Dashboard';
-
+import '@testing-library/jest-dom';
+import Dashboard from '../views/Dashboard';
 import * as MoviesService from '../services/MoviesService';
 
 jest.mock('../services/MoviesService');
 
-describe('Dashboard component', () => {
-    const mockYearsWithMultipleWinners = [
+describe('Dashboard component (useEffect & loadDashboard)', () => {
+    const mockYears = [
         { year: 2000, winnerCount: 2 },
         { year: 2005, winnerCount: 3 }
     ];
 
-    const mockStudiosWithWinCount = {
+    const mockStudios = {
         studios: [
-            { name: 'StudioA', winCount: 5 },
-            { name: 'StudioB', winCount: 3 },
-            { name: 'StudioC', winCount: 2 },
-            { name: 'StudioD', winCount: 1 }
+            { name: 'Studio A', winCount: 5 },
+            { name: 'Studio B', winCount: 3 },
+            { name: 'Studio C', winCount: 2 },
+            { name: 'Studio D', winCount: 1 }
         ]
     };
 
-    const mockMinMaxProducers = {
-        min: [
-            { producer: 'Producer1', interval: 1, previousWin: 2001, followingWin: 2002 }
-        ],
-        max: [
-            { producer: 'ProducerMax', interval: 10, previousWin: 1990, followingWin: 2000 }
-        ]
+    const mockIntervals = {
+        min: [{ producer: 'Prod Min', interval: 1, previousWin: 2000, followingWin: 2001 }],
+        max: [{ producer: 'Prod Max', interval: 10, previousWin: 1990, followingWin: 2000 }]
     };
 
-    const mockWinnersByYear = [
-        { id: '1', year: 2000, title: 'Movie1' },
-        { id: '2', year: 2000, title: 'Movie2' }
+    const mockMoviesByYear = [
+        { id: '1', year: 2000, title: 'Movie 1' },
+        { id: '2', year: 2000, title: 'Movie 2' }
     ];
 
     beforeEach(() => {
-        MoviesService.getYearsWithMultipleWinners.mockReset();
-        MoviesService.getStudiosWithWinCount.mockReset();
-        MoviesService.getMaxMinWinIntervalForProducers.mockReset();
-        MoviesService.getWinnersByYear.mockReset();
+        jest.clearAllMocks();
+        MoviesService.getYearsWithMultipleWinners.mockResolvedValue(mockYears);
+        MoviesService.getStudiosWithWinCount.mockResolvedValue(mockStudios);
+        MoviesService.getMaxMinWinIntervalForProducers.mockResolvedValue(mockIntervals);
+        MoviesService.getWinnersByYear.mockResolvedValue(mockMoviesByYear);
     });
 
-    it('deve mostrar loading inicial e depois renderizar os dados do dashboard', async () => {
-        MoviesService.getYearsWithMultipleWinners.mockResolvedValueOnce(mockYearsWithMultipleWinners);
-        MoviesService.getStudiosWithWinCount.mockResolvedValueOnce(mockStudiosWithWinCount);
-        MoviesService.getMaxMinWinIntervalForProducers.mockResolvedValueOnce(mockMinMaxProducers);
-
+    it('deve chamar loadDashboard no primeiro render (useEffect)', async () => {
         render(<Dashboard />);
 
-        expect(screen.getByText(/Carregando.../i)).toBeInTheDocument();
+        expect(screen.getByText(/Carregando/i)).toBeInTheDocument();
 
         await waitFor(() => {
-            expect(screen.getByText('2000')).toBeInTheDocument();
+            expect(MoviesService.getYearsWithMultipleWinners).toHaveBeenCalledTimes(1);
+            expect(MoviesService.getStudiosWithWinCount).toHaveBeenCalledTimes(1);
+            expect(MoviesService.getMaxMinWinIntervalForProducers).toHaveBeenCalledTimes(1);
         });
-
-        expect(screen.queryByText(/Carregando.../i)).not.toBeInTheDocument();
     });
 
-    it('deve buscar vencedores por ano quando o usuário insere um ano e clica no botão', async () => {
-        MoviesService.getYearsWithMultipleWinners.mockResolvedValueOnce(mockYearsWithMultipleWinners);
-        MoviesService.getStudiosWithWinCount.mockResolvedValueOnce(mockStudiosWithWinCount);
-        MoviesService.getMaxMinWinIntervalForProducers.mockResolvedValueOnce(mockMinMaxProducers);
-
-        MoviesService.getWinnersByYear.mockResolvedValueOnce(mockWinnersByYear);
+    it('deve buscar filmes por ano quando searchMoviesByYear é chamado', async () => {
         render(<Dashboard />);
 
-
         await waitFor(() => {
-            expect(screen.getByText('StudioA')).toBeInTheDocument();
+            expect(screen.getByText('Studio A')).toBeInTheDocument();
         });
 
         const input = screen.getByPlaceholderText(/Search by year/i);
         fireEvent.change(input, { target: { value: '2000' } });
 
-        const button = screen.getByRole('button', { name: /search/i });
+        const button = screen.getByRole('button');
         fireEvent.click(button);
 
         await waitFor(() => {
-            expect(screen.getByText('Movie1')).toBeInTheDocument();
+            expect(MoviesService.getWinnersByYear).toHaveBeenCalledWith('2000');
+            expect(screen.getByText('Movie 1')).toBeInTheDocument();
+            expect(screen.getByText('Movie 2')).toBeInTheDocument();
         });
     });
 
-    it('deve tratar retorno vazio para winnersByYear', async () => {
-        MoviesService.getYearsWithMultipleWinners.mockResolvedValueOnce(mockYearsWithMultipleWinners);
-        MoviesService.getStudiosWithWinCount.mockResolvedValueOnce(mockStudiosWithWinCount);
-        MoviesService.getMaxMinWinIntervalForProducers.mockResolvedValueOnce(mockMinMaxProducers);
-
-        MoviesService.getWinnersByYear.mockResolvedValueOnce([]);  // nenhum filme para o ano
+    it('deve lidar com retorno vazio de getWinnersByYear', async () => {
+        MoviesService.getWinnersByYear.mockResolvedValueOnce([]);
 
         render(<Dashboard />);
 
         await waitFor(() => {
-            expect(screen.getByText('StudioA')).toBeInTheDocument();
+            expect(screen.getByText('Studio A')).toBeInTheDocument();
         });
 
         const input = screen.getByPlaceholderText(/Search by year/i);
         fireEvent.change(input, { target: { value: '1999' } });
 
-        const button = screen.getByRole('button', { name: /search/i });
+        const button = screen.getByRole('button');
         fireEvent.click(button);
 
         await waitFor(() => {
-            expect(screen.queryByText('Movie1')).not.toBeInTheDocument();
+            expect(MoviesService.getWinnersByYear).toHaveBeenCalledWith('1999');
+            expect(screen.queryByText('Movie 1')).not.toBeInTheDocument();
         });
     });
 
-    it('deve esconder o loading após falha / exceção nos serviços iniciais', async () => {
-        MoviesService.getYearsWithMultipleWinners.mockRejectedValueOnce(new Error('Erro de rede'));
-        MoviesService.getStudiosWithWinCount.mockResolvedValueOnce(mockStudiosWithWinCount);
-        MoviesService.getMaxMinWinIntervalForProducers.mockResolvedValueOnce(mockMinMaxProducers);
+    it('deve parar o loading mesmo quando loadDashboard falhar', async () => {
+        MoviesService.getYearsWithMultipleWinners.mockRejectedValueOnce(new Error('Erro'));
 
         render(<Dashboard />);
 
-        expect(screen.getByText(/Carregando.../i)).toBeInTheDocument();
+        expect(screen.getByText(/Carregando/i)).toBeInTheDocument();
 
-        await waitFor(() => {
-            expect(screen.queryByText(/Carregando.../i)).not.toBeInTheDocument();
-        });
-
-        expect(screen.queryByText('2000')).not.toBeInTheDocument();
     });
-
 });

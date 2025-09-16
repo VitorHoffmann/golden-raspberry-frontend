@@ -5,7 +5,7 @@ import {
     getWinnersByYear,
     getStudiosWithWinCount,
     getMaxMinWinIntervalForProducers
-} from './movieApi';
+} from './MoviesService';
 
 beforeEach(() => {
     global.fetch = jest.fn();
@@ -25,27 +25,28 @@ describe('movieApi', () => {
                 json: async () => mockData
             });
 
-            const result = await listMovies({ page: 1, size: 10, winner: '', year: '' });
+            const page = 1;
+            const size = 10;
+            const result = await listMovies(page, size);
             expect(result).toEqual(mockData);
             expect(fetch).toHaveBeenCalledWith(
-                "https://challenge.outsera.tech/api/movies/api/movies",
-                { params: { page: 1, size: 10 } }
-            );
+                "https://challenge.outsera.tech/api/movies?page=1&size=10");
         });
 
         it('deve acrescentar winner como booleano quando winner = "Yes"', async () => {
-            const mockData = { movies: ['FilmeX'], page: 2, size: 5, winner: true };
+            const mockData = {movies: ['FilmeX'], page: 2, size: 5, winner: true};
             global.fetch.mockResolvedValueOnce({
                 ok: true,
                 json: async () => mockData
             });
 
-            const result = await listMovies({ page: 2, size: 5, winner: 'Yes', year: '' });
+            const page = 2;
+            const size = 5;
+            const winner = true;
+            const result = await listMovies(page, size, winner);
             expect(result).toEqual(mockData);
             expect(fetch).toHaveBeenCalledWith(
-                "https://challenge.outsera.tech/api/movies/api/movies",
-                { params: { page: 2, size: 5, winner: true } }
-            );
+                "https://challenge.outsera.tech/api/movies?page=2&size=5&winner=true");
         });
 
         it('deve retornar null quando fetch retorna status !ok', async () => {
@@ -54,8 +55,11 @@ describe('movieApi', () => {
                 status: 500,
                 json: async () => ({ error: 'Server error' })
             });
-
-            const result = await listMovies({ page: 1, size: 10, winner: '', year: '' });
+            const page = 1;
+            const size = 10;
+            const winner = '';
+            const year = '';
+            const result = await listMovies(page, size, winner, year);
             expect(result).toBeNull();
         });
 
