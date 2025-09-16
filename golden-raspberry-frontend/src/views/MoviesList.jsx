@@ -5,34 +5,46 @@ const MovieTable = () => {
     const [movies, setMovies] = useState([]);
     const [yearFilter, setYearFilter] = useState('');
     const [winnerFilter, setWinnerFilter] = useState('');
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const size = 15;
+    const [loading, setLoading] = useState(true);
 
     const loadMovies = async () => {
         try {
-            const data = await listMovies({
+            setLoading(true);
+            const data = await listMovies(
                 page,
                 size,
-                winner: winnerFilter,
-                year: yearFilter
-            });
+                winnerFilter,
+                yearFilter
+            );
             setMovies(data.content);
             setTotalPages(data.totalPages);
-        } catch (error) {
-            console.error("Failed to fetch movies", error);
+        } finally {
+            setLoading(false);
         }
     };
 
     useEffect(() => {
         loadMovies();
-    }, [page, winnerFilter, yearFilter]);
+    }, [page, size, winnerFilter, yearFilter]);
 
     const handlePageChange = (newPage) => {
         if (newPage >= 0 && newPage < totalPages) {
             setPage(newPage);
         }
     };
+
+    if (loading) {
+        return (
+            <div className="d-flex justify-content-center align-items-center py-5">
+                <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Carregando...</span>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="container mt-4">

@@ -44,9 +44,9 @@ export default function Dashboard() {
 
     async function searchMoviesByYear(year) {
         try {
+            setLoading(true);
             const movies = await getWinnersByYear(year);
             setMoviesByYearList(Array.isArray(movies) ? movies : []);
-            setLoading(true);
         } finally {
             setLoading(false);
         }
@@ -192,7 +192,7 @@ export default function Dashboard() {
                                     value={searchYear}
                                     onChange={(e) => setSearchYear(e.target.value)}
                                 />
-                                <button className="btn btn-primary" onClick={loadMoviesByYearList()}>
+                                <button className="btn btn-primary" onClick={loadMoviesByYearList}>
                                     <i className="bi bi-search"></i>
                                 </button>
                             </div>

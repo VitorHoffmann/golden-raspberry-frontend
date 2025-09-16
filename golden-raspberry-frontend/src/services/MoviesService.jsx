@@ -1,16 +1,12 @@
 const BASE_URL = "https://challenge.outsera.tech/api/movies"; // altere para sua API real
 
-export async function listMovies({ page, size, winner, year }) {
+export async function listMovies(page, size, winner, year) {
     try {
-        const params = {
-            page,
-            size,
-        };
+        let params = "page=" + page + "&size=" + size;
+        params += winner ? "&winner=" + winner : "";
+        params += year ? "&year=" + year : "";
 
-        if (winner !== '') params.winner = winner === 'Yes';
-        if (year !== '') params.year = year;
-
-        const response = await fetch(`${BASE_URL}/api/movies`, { params });
+        const response = await fetch(`${BASE_URL}?` + params);
         if (!response.ok) throw new Error("Erro ao carregar lista de filmes");
         return await response.json();
     } catch (error) {
