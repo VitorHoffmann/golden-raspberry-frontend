@@ -2,7 +2,7 @@
 
 ## Pré-requisitos
 
-- Node.js **18.x** (a aplicação não é compatível com a versão 20). Recomendamos o uso de [`nvm`](https://github.com/nvm-sh/nvm) para gerenciar versões.
+- Node.js **18.x** (a aplicação não é compatível com a versão 20). Recomendado o uso de [`nvm`](https://github.com/nvm-sh/nvm) para gerenciar versões.
 - npm 8 ou superior.
 
 ## Instalação e execução
