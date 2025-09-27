@@ -1,16 +1,16 @@
 import type { ChangeEvent, FormEvent } from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import LoadingIndicator from '../components/common/LoadingIndicator';
-import ProducerIntervalsTable from '../components/dashboard/ProducerIntervalsTable';
-import TopStudiosTable from '../components/dashboard/TopStudiosTable';
-import WinnersByYearSection from '../components/dashboard/WinnersByYearSection';
-import YearsWithMultipleWinnersTable from '../components/dashboard/YearsWithMultipleWinnersTable';
+import LoadingIndicator from '../components/common/LoadingIndicator.tsx';
+import ProducerIntervalsTable from '../components/dashboard/ProducerIntervalsTable.tsx';
+import TopStudiosTable from '../components/dashboard/TopStudiosTable.tsx';
+import WinnersByYearSection from '../components/dashboard/WinnersByYearSection.tsx';
+import YearsWithMultipleWinnersTable from '../components/dashboard/YearsWithMultipleWinnersTable.tsx';
 import {
     getMaxMinWinIntervalForProducers,
     getStudiosWithWinCount,
     getWinnersByYear,
     getYearsWithMultipleWinners,
-} from '../services/MoviesService';
+} from '../services/MoviesService.ts';
 import type { Movie, ProducerInterval, Studio, YearWithWinners } from '../types/movies';
 
 const Dashboard = () => {

@@ -1,10 +1,10 @@
 import type { ChangeEvent } from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import LoadingIndicator from '../components/common/LoadingIndicator';
-import MoviesFilters, { type WinnerFilterValue } from '../components/movies/MoviesFilters';
-import MoviesTable from '../components/movies/MoviesTable';
-import PaginationControls from '../components/movies/PaginationControls';
-import { listMovies } from '../services/MoviesService';
+import LoadingIndicator from '../components/common/LoadingIndicator.tsx';
+import MoviesFilters, { type WinnerFilterValue } from '../components/movies/MoviesFilters.tsx';
+import MoviesTable from '../components/movies/MoviesTable.tsx';
+import PaginationControls from '../components/movies/PaginationControls.tsx';
+import { listMovies } from '../services/MoviesService.ts';
 import type { Movie } from '../types/movies';
 
 const PAGE_SIZE = 15;

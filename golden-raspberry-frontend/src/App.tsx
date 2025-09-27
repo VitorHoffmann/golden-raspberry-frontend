@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom';
-import Dashboard from './views/Dashboard';
-import MoviesList from './views/MoviesList';
+import Dashboard from './views/Dashboard.tsx';
+import MoviesList from './views/MoviesList.tsx';
 
 const App = () => (
     <Router>
