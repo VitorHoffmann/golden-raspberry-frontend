@@ -1,14 +1,32 @@
-Para instalar as bibliotecas e rodar o projeto basta digitar
+# Golden Raspberry Awards Frontend
 
+## Pré-requisitos
+
+- Node.js **18.x** (a aplicação não é compatível com a versão 20). Recomendamos o uso de [`nvm`](https://github.com/nvm-sh/nvm) para gerenciar versões.
+- npm 8 ou superior.
+
+## Instalação e execução
+
+Instale as dependências e execute a aplicação:
+
+```bash
 npm install
 npm start
+```
 
-no terminal/power shell do windows apontado para o projeto
+A aplicação estará disponível em [http://localhost:3000](http://localhost:3000).
 
-A aplicação estará rodando no endereço: http://localhost:3000
+## Testes
 
-Para rodar os testes do projeto basta digitar
+Execute a suíte de testes unitários com:
 
+```bash
 npm test
+```
 
-no terminal/power shell do windows apontado para o projeto
+## Tecnologias
+
+- React com TypeScript.
+- Bootstrap 5.
+- React Router DOM.
+- @testing-library para testes unitários.
